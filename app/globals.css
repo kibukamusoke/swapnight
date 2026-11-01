@@ -29,3 +29,4 @@
 .selfie-tips{margin:0 0 14px;padding-left:18px;font-size:13px;line-height:1.7;color:var(--muted)}
 .colors-card.mobile-only{display:none}
 @media(max-width:750px){.colors-card.mobile-only{display:grid;margin-bottom:18px}.colors-card.desktop-only{display:none}.how-strip{display:grid;grid-template-columns:repeat(4,1fr);align-items:start}}
+.color-field .color-thumb{width:42px;height:48px;object-fit:cover;border-radius:5px;border:1px solid var(--line)}
