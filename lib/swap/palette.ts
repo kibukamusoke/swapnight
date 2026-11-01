@@ -63,7 +63,8 @@ export function analyze(input: ToneReading, source: ColorProfile['source'] = 'yo
   let season: Season;
   if (undertone === 'warm') season = depth === 'deep' || contrast === 'soft' ? 'Autumn' : 'Spring';
   else if (undertone === 'cool') season = depth === 'deep' || contrast === 'high' ? 'Winter' : 'Summer';
-  else season = contrast === 'high' ? 'Winter' : depth === 'light' ? 'Summer' : w >= 0 ? 'Autumn' : 'Summer';
+  // Deep neutral skin goes deep (Autumn/Winter), never to the soft, light Summer palette.
+  else season = contrast === 'high' ? 'Winter' : depth === 'deep' ? (w >= 0 ? 'Autumn' : 'Winter') : depth === 'light' ? 'Summer' : w >= 0 ? 'Autumn' : 'Summer';
   return { undertone, depth, contrast, season, palette: PALETTES[season], tones, source };
 }
 

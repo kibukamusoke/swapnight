@@ -40,3 +40,7 @@ describe('copy for live YouCam edge cases',()=>{
  it('says "Flatters your coloring" for neutral undertones instead of "neutral undertone"',()=>{const p=analyze({skin:'#b48f75',lip:'#d99791',eyebrow:'#5b575a',hair:'#B56637',eyeName:'Brown',hairName:'Auburn'});expect(p.undertone).toBe('neutral');expect(matchColor('#5b6236',p).label).toBe('Flatters your coloring');expect(matchColor('#efe6d4',analyze(SAMPLE_TONES.maya,'sample')).label).toBe('Flatters your warm undertone');});
  it('turns error_no_face into a specific retake prompt',()=>{expect(retakeMessage('error_no_face')).toMatch(/could not find a face/);});
 });
+describe('fairness across the Monk Skin Tone scale',()=>{
+ it('never puts the deepest skin tones in the soft, light Summer palette',()=>{for(const skin of ['#3a312a','#292420']){const p=analyze({skin,hair:'#1c1714',hairName:'Black',eyeName:'Brown'},'sample');expect(p.depth).toBe('deep');expect(p.season).not.toBe('Summer');}});
+ it('leaves the demo personas and the live YouCam sample unchanged',()=>{expect(analyze(SAMPLE_TONES.maya,'sample').season).toBe('Spring');expect(analyze(SAMPLE_TONES.sara,'sample').season).toBe('Autumn');expect(analyze(SAMPLE_TONES.lina,'sample').season).toBe('Summer');expect(analyze({skin:'#b48f75',hair:'#B56637',eyeName:'Brown',hairName:'Auburn'}).season).toBe('Autumn');});
+});
