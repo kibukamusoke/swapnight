@@ -1,4 +1,4 @@
--- Additive migration. Existing ClosetMath tables and buckets are untouched.
+-- Additive migration. Existing tables and buckets are untouched.
 create table public.sn_events (
  id uuid primary key default gen_random_uuid(), host_id uuid not null,
  invite_hash text not null unique, state jsonb not null,

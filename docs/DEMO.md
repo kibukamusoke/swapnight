@@ -12,13 +12,13 @@ Click **Explore demo**, then **Reset demo**. Note the fictional-adult labels and
 
 Open Sara’s blouse. The original sample photo, condition, size, and measurements stay visible: AI try-on is an appearance preview, not a fit guarantee, and fit is still checked at handover.
 
-With your own consented adult photo you can use **Generate real try-on**, which sends a real YouCam AI Clothes request. The request runs independently, so you can keep exploring while it processes; finished results are saved under **My previews**. Live generation currently depends on YouCam AI Clothes credits — if none are available, the app shows the provider’s reason instead of a placeholder (see the README’s YouCam section).
+With your own consented adult photo you can use **Generate real try-on**, which sends a real YouCam AI Clothes request. The request runs independently, so you can keep exploring while it processes; finished results are saved under **My previews**. Sign in first; each account can run five live previews per day.
 
 **0:50–1:20 — Why a circle helps**
 
 Close the garment. Maya offers a jacket and wants Sara’s blouse. Sara wants Lina’s cardigan. Lina wants Maya’s jacket. No two people have a reciprocal match.
 
-The visual chain shows these explicit preferences — willingness is never inferred by AI. Click **Find my swap** to see the three-person proposal and the current participant’s **You give / You receive**.
+The visual chain shows these explicit preferences — willingness is never inferred by AI. Click **Find my swap** to see the three-person proposal and the current participant’s **You give / You receive**. If you’re signed in and have tried on the piece you would receive, your genuine YouCam preview appears right above **Accept**; otherwise **See it on me first** opens that garment’s try-on panel.
 
 **1:20–1:55 — Everyone stays in control**
 

@@ -28,6 +28,6 @@ test('shows no-match, expiry, original garment info and truthful preview state',
  await page.getByRole('button',{name:'Explore demo',exact:true}).click();await page.getByRole('button',{name:'Your exchanges'}).click();await expect(page.getByText('expired',{exact:true})).toBeVisible();
  await page.getByRole('button',{name:'Reset demo'}).click();await page.getByRole('button',{name:/Sara’s piece/}).click();await expect(page.getByText('Chest 100 cm · length 62 cm')).toBeVisible();await expect(page.getByText(/not a promise of exact fit/)).toBeVisible();await page.getByRole('button',{name:'Remove this preference'}).click();await page.getByRole('button',{name:'Close dialog'}).click();await expect(page.getByRole('button',{name:'No available match yet'})).toBeDisabled();await page.getByRole('button',{name:'My previews',exact:true}).click();await expect(page.getByText('A little privacy, please.')).toBeVisible();
 });
-test('live endpoints reject anonymous access and retired endpoints do not bypass auth',async({request})=>{
- expect((await request.get('/api/events')).status()).toBe(401);expect((await request.get('/api/previews')).status()).toBe(401);expect((await request.get('/api/events/00000000-0000-4000-8000-000000000001')).status()).toBe(401);expect((await request.post('/api/upload')).status()).toBe(410);
+test('live endpoints reject anonymous access',async({request})=>{
+ expect((await request.get('/api/events')).status()).toBe(401);expect((await request.get('/api/previews')).status()).toBe(401);expect((await request.get('/api/events/00000000-0000-4000-8000-000000000001')).status()).toBe(401);
 });

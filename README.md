@@ -11,13 +11,23 @@ A mobile-first private clothing-swap application for the YouCam Skin AI & eComme
 - Private events and invitation links; Supabase email/password Auth.
 - Tops and jackets with original photos, size, condition, and measurements.
 - Explicit item-for-item preferences; deterministic two- and three-person cycle matching.
-- Clear “You give / You receive” proposals and individual acceptance.
+- Clear “You give / You receive” proposals and individual acceptance, with your own YouCam try-on of the piece you would receive shown right above **Accept** (or a **See it on me first** shortcut to make one).
 - Atomic reservations, conflict handling, rejection, cancellation, and expiry.
 - Fitting/condition/physical-handover checklist; completion requires every participant.
 - Real YouCam Clothes v4 generation, persisted task IDs, resumable polling, private result storage, and photo/result deletion.
 - Isolated browser-local **Explore demo**, fictional Maya/Sara/Lina switcher, and repeatable reset.
 
 The demo seed has no two-person match and exactly one three-person match: Maya’s jacket → Sara’s blouse → Lina’s cardigan → Maya’s jacket. Demo exchanges and handovers are simulated. Sample garment photos were generated for this project; they are not YouCam results.
+
+## Screenshots
+
+**Genuine YouCam AI Clothes results**, generated through the deployed app: Maya in Sara’s blouse (`upper_body`) and Lina in Maya’s denim jacket (`outer`). The person photos are AI-generated fictional adults; the try-ons are unedited YouCam output.
+
+![Before and after: Maya in the Sunday blouse, Lina in the denim jacket](docs/swapnight-tryon.jpg)
+
+| See it before you say yes | The private rack | Landing |
+| --- | --- | --- |
+| ![Proposal card with Maya’s try-on above Accept](docs/swapnight-proposal.png) | ![Mobile demo rack](docs/swapnight-mobile.png) | ![Desktop landing page](docs/swapnight-desktop.png) |
 
 ## Stack
 
@@ -76,7 +86,7 @@ A database quota claim is made before starting a paid task (five claims per acco
 
 Try-on is an **appearance preview, not a fit guarantee**. Original garment details remain visible.
 
-**Known limitation:** the deployed app's YouCam key is valid, but the connected account currently has no AI Clothes credits, so live generation returns the provider's `CreditInsufficiency` reason and no saved try-on examples are included. Everything else in the exchange lifecycle works without credits.
+Once a preview succeeds, the proposal card shows it next to **Accept** for the piece you would receive, so the decision to swap is made after seeing it on you. Previews are private to the signed-in account and keyed by garment, so in the solo demo one account can see its own try-on while playing each participant.
 
 ## Solo demo and reset
 
@@ -93,7 +103,7 @@ Verified results:
 - 10 Playwright tests pass on local development, the local Workers production runtime, and the deployed Cloudflare URL, on desktop and mobile.
 - Real Supabase integration passes against local development, the local Workers runtime, and the deployed Cloudflare URL: three disposable accounts, private events/invitations, uploads, ownership and cross-event denial, simultaneous acceptance, reservations, and physical handover.
 - Server secret values are absent from public Worker assets.
-- YouCam key acceptance and image uploads are verified; a successful paid AI Clothes generation is not yet verified (see [YouCam](#youcam)).
+- Real YouCam AI Clothes generation is verified end to end on the deployed app: upload, quota claim, provider task, resumable polling, private storage, and display in the garment view, My previews, and the proposal card. See the [screenshots](#screenshots).
 
 ```sh
 npm test                       # Vitest: matching, state, Postgres RPCs, RLS, quota, image specs
@@ -120,9 +130,9 @@ node scripts/publish-secrets.mjs
 
 The secret script sends only the four whitelisted application environment values to Wrangler over stdin and never prints the values. For local Workers secret overrides, copy `.dev.vars.example` to `.dev.vars`. Use `npm run deploy` for subsequent source deployments.
 
-## Preserved work
+## License
 
-SwapNight evolved from an earlier ClosetMath prototype. Its original Supabase tables and data are preserved, and its legacy unauthenticated endpoints return HTTP 410 in SwapNight.
+[MIT](LICENSE)
 
 ## Official references
 

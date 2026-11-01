@@ -7,8 +7,4 @@ export async function youcam(path: string, method = 'GET', body?: unknown) {
  if (!response.ok || data.error) throw new Error(data.error_code === 'CreditInsufficiency' ? 'This YouCam account needs AI Clothes credits before a real try-on can run.' : response.status === 401 ? 'The YouCam API key needs updating.' : response.status === 429 ? 'The fitting room is busy. Please try again in a moment.' : 'YouCam could not process this request. Please check your photo and API credits.');
  return data.data;
 }
-export function apiError(error: unknown) { return Response.json({ error: error instanceof Error ? error.message : 'Something went wrong. Please try again.' }, { status: 503 }); }
 
-import { createHmac, timingSafeEqual } from 'node:crypto';
-export function signValue(value: string) { return createHmac('sha256', process.env.YOUCAM_API_KEY || 'unconfigured').update(value).digest('hex'); }
-export function verifyValue(value: string, signature?: string) { if(!process.env.YOUCAM_API_KEY || !signature) return false; const expected=Buffer.from(signValue(value));const supplied=Buffer.from(signature);return expected.length===supplied.length&&timingSafeEqual(expected,supplied); }
