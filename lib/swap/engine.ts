@@ -1,6 +1,6 @@
 export type Category = 'Top' | 'Jacket';
 export type Participant = { id: string; name: string; adult: true };
-export type Item = { id: string; eventId: string; ownerId: string; name: string; category: Category; size: string; condition: string; measurements: string; image: string; status: 'available' | 'swapped' | 'withdrawn'; reservedBy?: string };
+export type Item = { id: string; eventId: string; ownerId: string; name: string; category: Category; size: string; condition: string; measurements: string; image: string; color?: string; status: 'available' | 'swapped' | 'withdrawn'; reservedBy?: string };
 export type Preference = { giveId: string; receiveId: string; actorId: string };
 export type Leg = { actorId: string; giveId: string; receiveId: string };
 export type Proposal = { id: string; legs: Leg[]; status: 'proposed' | 'reserved' | 'cancelled' | 'expired' | 'completed'; accepted: string[]; handedOver: string[]; expiresAt: number; reason?: string };
@@ -60,7 +60,8 @@ export function transition(input:EventState, actorId:string, command:Command, re
   for(const value of [i.name,i.size,i.condition])requireThat(typeof value==='string'&&value.trim().length>0&&value.length<=120,'Add a name, size, and condition (up to 120 characters each).');
   requireThat(typeof i.measurements==='string'&&i.measurements.length<=300,'Keep measurements under 300 characters.');
   requireThat(typeof i.image==='string'&&i.image.length>0,'Add a garment photo.');
-  state.items.push({...i,status:'available',reservedBy:undefined});
+  requireThat(i.color===undefined||(typeof i.color==='string'&&/^#[0-9a-f]{6}$/i.test(i.color)),'Garment color must be a hex value.');
+  state.items.push({...i,...(i.color?{color:i.color.toLowerCase()}:{}),status:'available',reservedBy:undefined});
  }else if(command.type==='withdraw'){
   const i=item(command.itemId);requireThat(i.ownerId===actorId,'You can only withdraw your own garment.');requireThat(available(i),'Cancel its reservation before withdrawing this garment.');i.status='withdrawn';
   for(const p of state.proposals)if(p.status==='proposed'&&p.legs.some(l=>l.giveId===i.id)){p.status='cancelled';p.reason='A garment was withdrawn.';release(state,p);}

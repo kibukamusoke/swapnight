@@ -2,7 +2,7 @@
 
 [Open the deployed app](https://swapnight.trevorsuna-c38.workers.dev) · [Three-minute walkthrough](docs/DEMO.md)
 
-**Bring something you never wear. Find something you will. See it on yourself before you swap.**
+**Swap clothes that suit you. See them on you first.**
 
 A mobile-first private clothing-swap application for the YouCam Skin AI & eCommerce VTO Hackathon. Anyone can try the full exchange lifecycle alone in the built-in demo, using clearly labeled fictional adults.
 
@@ -14,6 +14,7 @@ A mobile-first private clothing-swap application for the YouCam Skin AI & eComme
 - Clear “You give / You receive” proposals and individual acceptance, with your own YouCam try-on of the piece you would receive shown right above **Accept** (or a **See it on me first** shortcut to make one).
 - Atomic reservations, conflict handling, rejection, cancellation, and expiry.
 - Fitting/condition/physical-handover checklist; completion requires every participant.
+- **Colors that love you:** one close-up selfie → YouCam AI Facial Color Tones Analyzer → SwapNight’s own undertone/season logic. The rack sorts **Flatters you first**, every garment gets a match badge, and the proposal card shows the match right above **Accept**.
 - Real YouCam Clothes v4 generation, persisted task IDs, resumable polling, private result storage, and photo/result deletion.
 - Isolated browser-local **Explore demo**, fictional Maya/Sara/Lina switcher, and repeatable reset.
 
@@ -88,6 +89,18 @@ Try-on is an **appearance preview, not a fit guarantee**. Original garment detai
 
 Once a preview succeeds, the proposal card shows it next to **Accept** for the piece you would receive, so the decision to swap is made after seeing it on you. Previews are private to the signed-in account and keyed by garment, so in the solo demo one account can see its own try-on while playing each participant.
 
+## Colors that love you (second YouCam API)
+
+A swap only closes when enough people say “yes” to enough pieces. The hardest yes is *“will this color even suit me?”* SwapNight answers it before anyone tries anything on.
+
+1. **YouCam AI Facial Color Tones Analyzer** (`POST /s2s/v2.0/task/skin-tone-analysis`, then polling) reads one close-up selfie and returns hex values for skin, lips, brows, hair and eyes, plus eye and hair color names. The selfie is streamed to YouCam and **never stored by SwapNight**. Only those hex tones are kept, in `sn_tones`, and the user can delete them at any time.
+2. **Our palette logic** (`lib/swap/palette.ts`, pure and unit-tested) does the rest. YouCam does not return undertone or season. We convert the tones to OKLab/OKLCH. Skin hue, nudged by hair and eye color, gives the undertone (warm, neutral or cool). Skin lightness gives depth. The skin-to-hair lightness gap gives contrast. Those map to a 4-season palette.
+3. Each garment has a main color. It is auto-detected in the browser from the upload, ignoring the backdrop, and the owner can adjust it. It is scored by perceptual distance to the wearer’s palette, with a smaller credit for the sister season. The three tiers are **Flatters you**, **Works on you** and **Bold pick**. We never call a color “wrong”.
+
+Guardrails: the analysis runs once per selfie and is cached per account. A Postgres claim allows 3 analyses per rolling day (20 units each) and blocks a second run while one is pending. Every task is polled to completion: inline for about 40 s, then resumed by `GET /api/tone`. An unpolled task can time out and still consume units. YouCam `error_face_*` codes become friendly retake prompts. The solo demo uses clearly labeled fictional sample tones for Maya, Sara and Lina, so it needs no account and makes no API call.
+
+Apply `supabase/migrations/202611010001_tones.sql` (additive) to enable live analysis. Until then the app works, and live color analysis reports that it is unavailable.
+
 ## Solo demo and reset
 
 Click **Explore demo**. Select Maya, Sara, or Lina using **Demo participant**. Click **Find my swap**, accept as each person, and confirm the fitting/handover checklist as each person. **Reset demo** restores the original scenario and clears only this browser’s simulated state. Different visitor/browser profiles have separate demo state. Same-origin tabs in one browser profile share the local demo collection; do not use them to simulate independent visitors. `seedDemo()` is the repeatable seed used by the UI and tests.
@@ -139,6 +152,7 @@ The secret script sends only the four whitelisted application environment values
 - [Cloudflare Next.js on Workers](https://developers.cloudflare.com/workers/framework-guides/web-apps/nextjs/)
 - [OpenNext Cloudflare setup](https://opennext.js.org/cloudflare/get-started)
 - [YouCam AI Clothes integration guide](https://docs.perfectcorp.com/reference/ai_clothes/section/overview/integration-guide)
+- [YouCam AI Facial Color Tones Analyzer](https://docs.perfectcorp.com/reference/ai_skin_tone_analysis)
 - [Supabase private storage](https://supabase.com/docs/guides/storage/buckets/fundamentals)
 
-Out of scope: payments, shipping, public discovery, social feeds, native apps, and AI styling.
+Out of scope: payments, shipping, public discovery, social feeds, and native apps. Color guidance only suggests; it never creates a preference or a swap.

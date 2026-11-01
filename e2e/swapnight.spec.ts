@@ -29,5 +29,11 @@ test('shows no-match, expiry, original garment info and truthful preview state',
  await page.getByRole('button',{name:'Reset demo'}).click();await page.getByRole('button',{name:/Sara’s piece/}).click();await expect(page.getByText('Chest 100 cm · length 62 cm')).toBeVisible();await expect(page.getByText(/not a promise of exact fit/)).toBeVisible();await page.getByRole('button',{name:'Remove this preference'}).click();await page.getByRole('button',{name:'Close dialog'}).click();await expect(page.getByRole('button',{name:'No available match yet'})).toBeDisabled();await page.getByRole('button',{name:'My previews',exact:true}).click();await expect(page.getByText('A little privacy, please.')).toBeVisible();
 });
 test('live endpoints reject anonymous access',async({request})=>{
- expect((await request.get('/api/events')).status()).toBe(401);expect((await request.get('/api/previews')).status()).toBe(401);expect((await request.get('/api/events/00000000-0000-4000-8000-000000000001')).status()).toBe(401);
+ expect((await request.get('/api/events')).status()).toBe(401);expect((await request.get('/api/previews')).status()).toBe(401);expect((await request.get('/api/events/00000000-0000-4000-8000-000000000001')).status()).toBe(401);expect((await request.get('/api/tone')).status()).toBe(401);
+});
+test('colors that love you: each persona sees what flatters them first',async({page})=>{
+ await page.goto('/');await page.getByRole('button',{name:'Explore demo',exact:true}).click();await expect(page.getByText('COLORS THAT LOVE YOU')).toBeVisible();await expect(page.getByText('Sample tones for Maya · fictional.')).toBeVisible();
+ const first=page.locator('.event-rack .garment-card').first();await expect(first).toContainText('The lived-in denim jacket');await page.getByRole('button',{name:'Flatters you first'}).click();await expect(page.getByRole('button',{name:'Flatters you first'})).toHaveAttribute('aria-pressed','true');await expect(first).toContainText('The Sunday blouse');await expect(first.locator('.tone-badge')).toHaveText('Flatters you');
+ await page.getByLabel('Demo participant').selectOption('lina');await expect(first).toContainText('The lived-in denim jacket');await expect(first.locator('.tone-badge')).toHaveText('Flatters you');
+ await page.getByLabel('Demo participant').selectOption('maya');await page.getByRole('button',{name:'Find my swap',exact:true}).click();await expect(page.getByText('✨ Flatters your warm undertone')).toBeVisible();
 });
