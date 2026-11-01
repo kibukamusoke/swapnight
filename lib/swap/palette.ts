@@ -77,7 +77,7 @@ export function matchColor(garment: string, profile: Pick<ColorProfile, 'season'
   const d = best.d;
   const score = Math.max(0, Math.min(1, 1 - d / 0.2));
   const tier = d <= 0.05 ? 'loves' : d <= 0.1 ? 'works' : 'stretch';
-  const label = tier === 'loves' ? `Flatters your ${profile.undertone} undertone` : tier === 'works' ? `Works with your ${profile.season} palette` : 'A bold pick for your palette';
+  const label = tier === 'loves' ? (profile.undertone === 'neutral' ? 'Flatters your coloring' : `Flatters your ${profile.undertone} undertone`) : tier === 'works' ? `Works with your ${profile.season} palette` : 'A bold pick for your palette';
   return { tier, score: Math.round(score * 100) / 100, nearest: best.c, label };
 }
 
@@ -98,6 +98,7 @@ export function dominantColor(rgba: ArrayLike<number>, width: number, height: nu
 }
 
 const RETAKE: Record<string, string> = {
+  error_no_face: 'We could not find a face. Try a close-up selfie, facing the camera.',
   error_below_min_image_size: 'That photo is too small. Use one at least 320 pixels on each side.',
   error_face_position_too_small: 'Get closer: your face should fill most of the frame, like a passport photo.',
   error_face_position_invalid: 'Center your face in the frame and keep it fully visible.',

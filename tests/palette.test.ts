@@ -36,3 +36,7 @@ describe('real YouCam response (sample selfie from YouCam docs, Nov 1 2026)',()=
  it('produces a stable profile from the live payload',()=>{const p=analyze(live);expect(p).toMatchObject({undertone:'neutral',depth:'medium',contrast:'soft',season:'Autumn'});expect(p.tones.hair).toBe('#b56637');});
  it('still separates in-palette from sister-palette colors for neutral undertones',()=>{const p=analyze(live);expect(matchColor('#5b6236',p).tier).toBe('loves');expect(matchColor('#6f8fb0',p).tier).not.toBe('loves');});
 });
+describe('copy for live YouCam edge cases',()=>{
+ it('says "Flatters your coloring" for neutral undertones instead of "neutral undertone"',()=>{const p=analyze({skin:'#b48f75',lip:'#d99791',eyebrow:'#5b575a',hair:'#B56637',eyeName:'Brown',hairName:'Auburn'});expect(p.undertone).toBe('neutral');expect(matchColor('#5b6236',p).label).toBe('Flatters your coloring');expect(matchColor('#efe6d4',analyze(SAMPLE_TONES.maya,'sample')).label).toBe('Flatters your warm undertone');});
+ it('turns error_no_face into a specific retake prompt',()=>{expect(retakeMessage('error_no_face')).toMatch(/could not find a face/);});
+});

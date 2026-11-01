@@ -27,3 +27,5 @@
 .color-field span{display:flex;align-items:center;gap:10px;font-size:12px;color:var(--muted);margin-top:6px}
 .color-field input[type=color]{width:42px;height:30px;padding:0;border:1px solid var(--line);border-radius:5px;background:none}
 .selfie-tips{margin:0 0 14px;padding-left:18px;font-size:13px;line-height:1.7;color:var(--muted)}
+.colors-card.mobile-only{display:none}
+@media(max-width:750px){.colors-card.mobile-only{display:grid;margin-bottom:18px}.colors-card.desktop-only{display:none}.how-strip{display:grid;grid-template-columns:repeat(4,1fr);align-items:start}}
